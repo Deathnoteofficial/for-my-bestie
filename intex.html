@@ -1,0 +1,335 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For You 💖</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Indie+Flower&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://images.unsplash.com/photo-1465188035480-6f3ecb4b64e1?auto=format&fit=crop&w=1350&q=80') no-repeat center center/contain;
+      background-size: cover;
+      color: #333333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 20px;
+      position: relative;
+    }
+
+    h1 {
+      margin-top: 40px;
+      font-size: 2.5rem;
+      color: #ff69b4;
+    }
+
+    .message-container {
+      max-width: 700px;
+      font-size: 1.1rem;
+      line-height: 1.8;
+      background-color: rgba(255, 192, 203, 0.95);
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(255, 105, 180, 0.2);
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1s ease, transform 1s ease;
+      min-height: 150px;
+      box-sizing: border-box;
+      word-wrap: break-word;
+    }
+
+    .message-container.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .typing {
+      display: inline-block;
+      white-space: normal;
+      overflow: hidden;
+      animation: typing 3s steps(40, end), blink .75s step-end infinite;
+      border-right: 2px solid #333333;
+    }
+
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+
+    @keyframes blink {
+      from, to { border-color: transparent }
+      50% { border-color: #333; }
+    }
+
+    .mood-line {
+      font-family: 'Pacifico', cursive;
+      font-size: 2rem;
+      background: linear-gradient(to right, #ff1493, #ff69b4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 2s ease-in-out infinite alternate;
+      margin-top: 30px;
+      margin-bottom: 20px;
+      display: block;
+      width: 100%;
+      word-wrap: break-word;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 5px #ff69b4, 0 0 10px #ff69b4; }
+      to { text-shadow: 0 0 15px #ff1493, 0 0 30px #ff69b4; }
+    }
+
+    .hearts {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .heart {
+      width: 24px;
+      height: 24px;
+      position: absolute;
+      background: url(https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Heart_font_awesome.svg/1024px-Heart_font_awesome.svg.png) no-repeat center center/contain;
+      animation: float 6s infinite ease-in-out;
+      transition: transform 0.3s ease;
+    }
+
+    .heart:hover {
+      transform: scale(1.5) rotate(20deg);
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-800px) scale(1.5); opacity: 0; }
+    }
+
+    .popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 240, 245, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .popup-box {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(255, 105, 180, 0.3);
+    }
+
+    .popup button {
+      margin: 10px;
+      padding: 10px 20px;
+      background: #ff69b4;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .signature {
+      font-size: 1rem;
+      color: #999;
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    .big-letter {
+      font-size: 3rem;
+      color: #ff1493;
+      font-weight: bold;
+      display: inline-block;
+      margin: 0 5px;
+      animation: glow 1.5s infinite alternate;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    .emotional-text {
+      font-family: 'Indie Flower', cursive;
+      font-size: 1.8rem;
+      margin: 20px 0;
+      color: #ff1493;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      line-height: 1.4;
+    }
+
+    .thankyou {
+      font-family: 'Pacifico', cursive;
+      font-size: 2rem;
+      color: #69aaff;
+      margin-top: 30px;
+      font-weight: bold;
+      text-align: center;
+      letter-spacing: 0.05em;
+      text-shadow: 0 0 8px #14e4ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts" id="heart-container"></div>
+
+  <div class="popup" id="popup">
+    <div class="popup-box">
+      <h2>Play background music?</h2>
+      <button onclick="startMusic(true)">Yes</button>
+      <button onclick="startMusic(false)">No</button>
+    </div>
+  </div>
+
+  <h1>Hey, Madam ji 💌</h1>
+  <div class="message-container" id="message"></div>
+
+  <audio id="bg-music" loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
+  </audio>
+
+  <script>
+    const heartContainer = document.getElementById('heart-container');
+    setInterval(() => {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.style.left = Math.random() * window.innerWidth + 'px';
+      heart.style.top = window.innerHeight + 'px';
+      heart.style.animationDuration = 4 + Math.random() * 4 + 's';
+      heartContainer.appendChild(heart);
+      setTimeout(() => heart.remove(), 8000);
+    }, 400);
+
+    const messages = [
+      "I know you're hurting. I feel it in the way your replies fall quiet...",
+      "You keep saying 'I’m okay', but I know you’re not — and that’s okay too.",
+      "You don’t have to be strong all the time.",
+      "I just want you to know — I’m always here, with you only.",
+      "one thing keep in mind you are not burden on me okiee.",
+      "i dont care,how many times you say negative thing about youself,i always see you perfect in my eyes",
+      "yrr i dont know to motive you in your hard days. but i will alwys pray for your best ,You are not alone, not now, not ever. 💖",
+      "<span class='mood-line'>✨ Let’s brighten your mood and make you smile. ✨</span>",
+      "<div>jheel ko khate hea lake...sooo why are you comparing yourself with outhers when your are lakho mea ek. 💕</div>",
+      "<div>your are PRECIOUS like GHENA just ignore chaar logo ka KHEENA and hamesha MUSKURATE rahena. 💝</div>",
+      "<div>You know two thing will never change MY CARE FOR YOU AND MY PRAYERS FOR YOUR SAFTEY . 💞</div>",
+      "<div>you know your are my'THEORIDE' RIGHT BUT YOU DONT KNOW YOU ARE SUCH A POAT ' PREETIEST OF ALL TIME'.😄</div>",
+      "<div>you know ,My sweetest memory is your message.My biggest sadness is your DISTANCE.My biggest hope that i see you soon. MY BIGGEST WISH IS TO BE WITH U . Smile please? warna mea dukhi ho jayunga.😢</div>",
+      "<div class='signature'>— Remember you are the best. Keep smiling 💕</div>"
+    ];
+
+    // Emotional lines after shayari and jokes
+    const emotionalLines = [
+      "at last i want to say that 🙃",
+      "tera yea achanak sea chup ho jana mujhe aacha nhi lagta hea yr😔 ",
+      "bohat udas hai koi tere chup ho jane sea",
+      "ho sake to bat kar kisi bahane sea...tu lakh khafa sahi magar itna toh dekh koi toot gya hea tere rooth jane sea",
+      "plz yr tere sea bat kiye bina mea nhi rhe sakta",
+      "Thank you for you time.",
+      "Madam ji ❤ and ha you are most strongest girl i saw and this thing make you differtnt from other 🙂"
+    ];
+
+    const messageBox = document.getElementById('message');
+    let currentIndex = 0;
+    let emotionalStage = 0; // 0: big letters, 1: emotional lines
+    let emotionalIndex = 0;
+
+    function showNextMessage() {
+      if (currentIndex < messages.length) {
+        messageBox.classList.remove('show');
+        setTimeout(() => {
+          messageBox.innerHTML = '';
+          const span = document.createElement('span');
+          if (messages[currentIndex].includes('<') && messages[currentIndex].includes('>')) {
+            span.innerHTML = messages[currentIndex];
+          } else {
+            span.classList.add('typing');
+            span.textContent = messages[currentIndex];
+          }
+          messageBox.appendChild(span);
+          messageBox.classList.add('show');
+          currentIndex++;
+          setTimeout(showNextMessage, 12000);
+        }, 1000);
+      } else if (emotionalStage === 0) {
+        messageBox.classList.remove('show');
+        setTimeout(() => {
+          messageBox.innerHTML = '';
+          const container = document.createElement('div');
+          container.style.marginBottom = '20px';
+          container.style.textAlign = 'center';
+
+          const letters = emotionalLines[0].split('');
+          letters.forEach((letter, i) => {
+            const span = document.createElement('span');
+            span.className = 'big-letter';
+            span.textContent = letter;
+            span.style.opacity = '0';
+            span.style.transition = 'opacity 0.6s ease ' + (i * 0.9) + 's';
+            container.appendChild(span);
+          });
+
+          messageBox.appendChild(container);
+          messageBox.classList.add('show');
+
+          const spans = container.querySelectorAll('.big-letter');
+          spans.forEach((span, i) => {
+            setTimeout(() => {
+              span.style.opacity = '1';
+            }, i * 900);
+          });
+
+          setTimeout(() => {
+            emotionalStage = 1;
+            emotionalIndex = 1;
+            showNextMessage();
+          }, letters.length * 900 + 3000);
+        }, 1000);
+      } else if (emotionalStage === 1 && emotionalIndex < emotionalLines.length) {
+        messageBox.classList.remove('show');
+        setTimeout(() => {
+          messageBox.innerHTML = '';
+          const div = document.createElement('div');
+          if (emotionalIndex === emotionalLines.length - 2) {
+            div.className = 'thankyou';
+          } else if (emotionalIndex === emotionalLines.length - 1) {
+            div.className = 'emotional-text';
+            div.style.fontSize = '2.4rem';
+          } else {
+            div.className = 'emotional-text';
+          }
+          div.textContent = emotionalLines[emotionalIndex];
+          messageBox.appendChild(div);
+          messageBox.classList.add('show');
+          emotionalIndex++;
+          setTimeout(showNextMessage, 10000);
+        }, 1000);
+      }
+    }
+
+    function startMusic(playMusic) {
+      document.getElementById('popup').style.display = 'none';
+      if (playMusic) {
+        document.getElementById('bg-music').play();
+      }
+      showNextMessage();
+    }
+  </script>
+</body>
+</html>
